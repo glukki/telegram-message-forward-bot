@@ -3,6 +3,11 @@ type = "javascript"
 account_id = ""
 workers_dev = true
 
+[[kv_namespaces]]
+binding = "LOGS"
+id = ""
+preview_id = ""
+
 [dev]
 port = 8080
 
