@@ -1,5 +1,17 @@
+import { log } from './log'
 import { handleRequest } from './handler'
 
+async function handleEvent(event: FetchEvent): Promise<Response> {
+  try {
+    return await handleRequest(event.request)
+  } catch (e) {
+    event.waitUntil(log(e, event.request))
+    return new Response(e.message || 'An error occurred!', {
+      status: e.statusCode || 500,
+    })
+  }
+}
+
 addEventListener('fetch', (event) => {
-  event.respondWith(handleRequest(event.request))
+  event.respondWith(handleEvent(event))
 })
