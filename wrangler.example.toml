@@ -1,0 +1,12 @@
+name = "telegram-message-forward-bot"
+type = "javascript"
+account_id = ""
+workers_dev = true
+
+[dev]
+port = 8080
+
+[build]
+command = "npm install && npm run build"
+[build.upload]
+format = "service-worker"
