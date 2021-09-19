@@ -1,6 +1,8 @@
 import { Router, RouterEntry } from './router'
+import { routes as appRoutes } from './routes'
 
 const routes: RouterEntry[] = [
+  ...appRoutes,
   {
     match: (url) => url.pathname === '/',
     handler: async (request) => {

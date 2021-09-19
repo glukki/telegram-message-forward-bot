@@ -8,6 +8,10 @@ binding = "LOGS"
 id = ""
 preview_id = ""
 
+[vars]
+HOOK_PATH = "/hook"
+TELEGRAM_API_TOKEN = ""
+
 [dev]
 port = 8080
 
