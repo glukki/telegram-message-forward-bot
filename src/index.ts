@@ -3,7 +3,7 @@ import { handleRequest } from './handler'
 
 async function handleEvent(event: FetchEvent): Promise<Response> {
   try {
-    return await handleRequest(event.request)
+    return await handleRequest(event.request, event)
   } catch (e) {
     event.waitUntil(log(e, event.request))
     return new Response(e.message || 'An error occurred!', {

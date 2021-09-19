@@ -1,3 +1,23 @@
-export async function handleRequest(request: Request): Promise<Response> {
-  return new Response(`request method: ${request.method}`)
+import { Router, RouterEntry } from './router'
+
+const routes: RouterEntry[] = [
+  {
+    match: (url) => url.pathname === '/',
+    handler: async (request) => {
+      return new Response(`request method: ${request.method}`)
+    },
+  },
+]
+
+let router: Router
+
+export async function handleRequest(
+  request: Request,
+  event: FetchEvent,
+): Promise<Response> {
+  if (!router) {
+    router = new Router(routes)
+  }
+
+  return await router.handle(request, event)
 }
