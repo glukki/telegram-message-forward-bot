@@ -11,6 +11,7 @@ preview_id = ""
 [vars]
 HOOK_PATH = "/hook"
 TELEGRAM_API_TOKEN = ""
+FORWARD_TO_CHAT_ID = ""
 
 [dev]
 port = 8080
