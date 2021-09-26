@@ -7,3 +7,7 @@ export type UpdateType = Exclude<UnionKeys<Update>, keyof Update>
 export type Methods = {
   [K in keyof Telegram]: Parameters<Telegram[K]>[0]
 }
+
+export type ReplyMethods = {
+  [K in keyof Telegram]: Parameters<Telegram[K]>[0] & { method: K }
+}
