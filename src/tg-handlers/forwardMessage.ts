@@ -25,11 +25,18 @@ export const forwardMessage: TelegramRouterEntry = {
 
     event.waitUntil(
       Promise.resolve().then(async () => {
+        const { from } = u.message
+        const userName =
+          from.first_name + (from.last_name ? ` ${from.last_name}` : '') ||
+          from.username ||
+          'anonymous'
+
         await fetch(
           `${TELEGRAM_API_URL}/sendMessage`,
           makeTelegramRequestParams({
             chat_id: FORWARD_TO_CHAT_ID,
-            text: 'We got a new message!',
+            parse_mode: 'MarkdownV2',
+            text: `We got a new message from [${userName}](tg://user?id=${u.message.from.id})`,
           } as Methods['sendMessage']),
         )
 
