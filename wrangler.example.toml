@@ -2,6 +2,7 @@ name = "telegram-message-forward-bot"
 type = "javascript"
 account_id = ""
 workers_dev = true
+compatibility_date = "2021-09-27"
 
 [[kv_namespaces]]
 binding = "LOGS"
