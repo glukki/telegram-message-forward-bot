@@ -4,7 +4,7 @@ import { TelegramRouterEntry } from '../telegramRouter'
 import { makeHookResponse } from '../telegramUtils'
 import { ReplyMethods } from '../types'
 
-const COMMAND = '/help'
+const COMMANDS = ['/start', '/help']
 const HELP_MESSAGE = `Send me anything to forward it to the community members
 
 Available commands:
@@ -23,7 +23,7 @@ export const help: TelegramRouterEntry = {
       return false
     }
 
-    return m.text === COMMAND
+    return COMMANDS.some((command) => m.text === command)
   },
   handler: async (update) => {
     const u = update as Update.MessageUpdate
