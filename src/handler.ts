@@ -1,13 +1,14 @@
-import { Router, RouterEntry } from './router'
+import { Handler, Router } from './router'
 import { routes as appRoutes } from './routes'
 
-const routes: RouterEntry[] = [
+const routes: Handler[] = [
   ...appRoutes,
-  {
-    match: (url) => url.pathname === '/',
-    handler: async (request) => {
-      return new Response(`request method: ${request.method}`)
-    },
+  (url, request) => {
+    if (url.pathname !== '/') {
+      return
+    }
+
+    return new Response(`request method: ${request.method}`)
   },
 ]
 

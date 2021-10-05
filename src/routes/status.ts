@@ -1,5 +1,5 @@
 import { WebhookInfo } from 'typegram/manage'
-import { RouterEntry } from '../router'
+import { Handler } from '../router'
 import { makeTelegramRequestParams, TELEGRAM_API_URL } from '../telegramUtils'
 import { Methods, UpdateType } from '../types'
 
@@ -7,26 +7,27 @@ const ALLOWED_UPDATES = ['message', 'my_chat_member'] as UpdateType[]
 
 let isHookBound = false
 
-export const status: RouterEntry = {
-  match: (url) => url.pathname === '/status',
-  handler: async (request) => {
-    if (!isHookBound) {
-      const url = new URL(request.url)
-      url.pathname = HOOK_PATH
+export const status: Handler = async (url, request) => {
+  if (url.pathname !== '/status') {
+    return
+  }
 
-      const response = await fetch(
-        `${TELEGRAM_API_URL}/setWebhook`,
-        makeTelegramRequestParams({
-          url: url.toString(),
-          allowed_updates: ALLOWED_UPDATES,
-        } as Methods['setWebhook']),
-      )
+  if (!isHookBound) {
+    const url = new URL(request.url)
+    url.pathname = HOOK_PATH
 
-      const responseBody = (await response.json()) as WebhookInfo
+    const response = await fetch(
+      `${TELEGRAM_API_URL}/setWebhook`,
+      makeTelegramRequestParams({
+        url: url.toString(),
+        allowed_updates: ALLOWED_UPDATES,
+      } as Methods['setWebhook']),
+    )
 
-      isHookBound = !!responseBody.url?.length
-    }
+    const responseBody = (await response.json()) as WebhookInfo
 
-    return fetch(TELEGRAM_API_URL + '/getWebhookInfo')
-  },
+    isHookBound = !!responseBody.url?.length
+  }
+
+  return fetch(TELEGRAM_API_URL + '/getWebhookInfo')
 }
