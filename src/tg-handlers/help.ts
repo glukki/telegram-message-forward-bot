@@ -1,6 +1,6 @@
 import { Message } from 'typegram'
 import { Update } from 'typegram/update'
-import { TelegramRouterEntry } from '../telegramRouter'
+import { TelegramHandler } from '../telegramRouter'
 import { makeHookResponse } from '../telegramUtils'
 import { ReplyMethods } from '../types'
 
@@ -11,27 +11,24 @@ Available commands:
 * /help - show bot description and commands
 * /whereami - send it in a group chat to get the chat ID`
 
-export const help: TelegramRouterEntry = {
-  match: (update: Update) => {
-    const u = update as Update.MessageUpdate
-    if (!u.message) {
-      return false
-    }
+export const help: TelegramHandler = (update) => {
+  const u = update as Update.MessageUpdate
+  if (!u.message) {
+    return // skip
+  }
 
-    const m = u.message as Message.TextMessage
-    if (!m.text) {
-      return false
-    }
+  const m = u.message as Message.TextMessage
+  if (!m.text) {
+    return // skip
+  }
 
-    return COMMANDS.some((command) => m.text === command)
-  },
-  handler: async (update) => {
-    const u = update as Update.MessageUpdate
+  if (!COMMANDS.some((command) => m.text === command)) {
+    return // skip
+  }
 
-    return makeHookResponse({
-      method: 'sendMessage',
-      chat_id: u.message.chat.id,
-      text: HELP_MESSAGE,
-    } as ReplyMethods['sendMessage'])
-  },
+  return makeHookResponse({
+    method: 'sendMessage',
+    chat_id: u.message.chat.id,
+    text: HELP_MESSAGE,
+  } as ReplyMethods['sendMessage'])
 }

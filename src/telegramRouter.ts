@@ -1,31 +1,33 @@
 import { Update } from 'typegram/update'
 
-const DEFAULT_HANDLER: TelegramRouterEntry = {
-  match: () => true,
-  handler: async () => undefined,
-}
+const DEFAULT_HANDLER = () => new Response()
 
-export interface TelegramRouterEntry {
-  match: (update: Update) => boolean
-  handler: (
-    update: Update,
-    request: Request,
-    event: FetchEvent,
-  ) => Promise<Response | void>
-}
+type MismatchingHandlerResponse = void | Promise<undefined>
+type MatchingHandlerResponse = Response | Promise<Response>
+
+export type TelegramHandler = (
+  update: Update,
+  request: Request,
+  event: FetchEvent,
+) => MismatchingHandlerResponse | MatchingHandlerResponse
 
 export class TelegramRouter {
-  protected handlers: TelegramRouterEntry[] = []
+  protected handlers: TelegramHandler[] = []
 
-  constructor(handlers: TelegramRouterEntry[]) {
+  constructor(handlers: TelegramHandler[]) {
     this.handlers = handlers
   }
 
-  async handle(request: Request, event: FetchEvent): Promise<Response | void> {
+  async handle(request: Request, event: FetchEvent): Promise<Response> {
     const body = (await request.json()) as Update
 
-    const { handler } =
-      this.handlers.find(({ match }) => match(body)) || DEFAULT_HANDLER
-    return await handler(body, request, event)
+    for (const handler of this.handlers) {
+      const response = await handler(body, request, event)
+      if (response) {
+        return response
+      }
+    }
+
+    return DEFAULT_HANDLER()
   }
 }
