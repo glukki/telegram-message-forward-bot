@@ -1,7 +1,9 @@
-import { Message } from 'typegram'
-import { Update } from 'typegram/update'
 import { TelegramHandler } from '../telegramRouter'
-import { makeHookResponse } from '../telegramUtils'
+import {
+  isMessageUpdate,
+  isTextMessage,
+  makeHookResponse,
+} from '../telegramUtils'
 import { ReplyMethods } from '../types'
 import { registerUpdatesSubscription } from './_events'
 
@@ -15,23 +17,22 @@ Available commands:
 * /whereami - send it in a group chat to get the chat ID`
 
 export const help: TelegramHandler = (update) => {
-  const u = update as Update.MessageUpdate
-  if (!u.message) {
+  if (!isMessageUpdate(update)) {
     return // skip
   }
 
-  const m = u.message as Message.TextMessage
-  if (!m.text) {
+  if (!isTextMessage(update.message)) {
     return // skip
   }
 
-  if (!COMMANDS.some((command) => m.text === command)) {
+  const { text } = update.message
+  if (!COMMANDS.some((command) => text === command)) {
     return // skip
   }
 
   return makeHookResponse({
     method: 'sendMessage',
-    chat_id: u.message.chat.id,
+    chat_id: update.message.chat.id,
     text: HELP_MESSAGE,
   } as ReplyMethods['sendMessage'])
 }

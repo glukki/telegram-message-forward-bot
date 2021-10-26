@@ -1,10 +1,10 @@
-import { Update } from 'typegram/update'
 import { Methods, ReplyMethods } from '../types'
 import { TelegramHandler } from '../telegramRouter'
 import {
   TELEGRAM_API_URL,
   makeHookResponse,
   makeTelegramRequestParams,
+  isMessageUpdate,
 } from '../telegramUtils'
 import { registerUpdatesSubscription } from './_events'
 
@@ -15,18 +15,21 @@ export const forwardMessage: TelegramHandler = (update, request, event) => {
     return // skip
   }
 
-  const u = update as Update.MessageUpdate
-  if (!u.message || u.message.chat.type !== 'private') {
+  if (!isMessageUpdate(update)) {
     return // skip
   }
 
-  if (u.message.chat.id.toString() === FORWARD_TO_CHAT_ID) {
+  if (update.message.chat.type !== 'private') {
+    return // skip
+  }
+
+  if (update.message.chat.id.toString() === FORWARD_TO_CHAT_ID) {
     return new Response() // catch
   }
 
   event.waitUntil(
     Promise.resolve().then(async () => {
-      const { from } = u.message
+      const { from } = update.message
       const userName =
         from.first_name + (from.last_name ? ` ${from.last_name}` : '') ||
         from.username ||
@@ -37,7 +40,7 @@ export const forwardMessage: TelegramHandler = (update, request, event) => {
         makeTelegramRequestParams({
           chat_id: FORWARD_TO_CHAT_ID,
           parse_mode: 'MarkdownV2',
-          text: `We got a new message from [${userName}](tg://user?id=${u.message.from.id})`,
+          text: `We got a new message from [${userName}](tg://user?id=${update.message.from.id})`,
         } as Methods['sendMessage']),
       )
 
@@ -45,8 +48,8 @@ export const forwardMessage: TelegramHandler = (update, request, event) => {
         `${TELEGRAM_API_URL}/forwardMessage`,
         makeTelegramRequestParams({
           chat_id: FORWARD_TO_CHAT_ID,
-          from_chat_id: u.message.chat.id,
-          message_id: u.message.message_id,
+          from_chat_id: update.message.chat.id,
+          message_id: update.message.message_id,
         } as Methods['forwardMessage']),
       )
     }),
@@ -54,7 +57,7 @@ export const forwardMessage: TelegramHandler = (update, request, event) => {
 
   return makeHookResponse({
     method: 'sendMessage',
-    chat_id: u.message.chat.id,
+    chat_id: update.message.chat.id,
     text: 'Your message got forwarded.',
   } as ReplyMethods['sendMessage'])
 }
