@@ -1,9 +1,8 @@
 import { WebhookInfo } from 'typegram/manage'
 import { Handler } from '../router'
 import { makeTelegramRequestParams, TELEGRAM_API_URL } from '../telegramUtils'
-import { Methods, UpdateType } from '../types'
-
-const ALLOWED_UPDATES = ['message', 'my_chat_member'] as UpdateType[]
+import { Methods } from '../types'
+import { UPDATES } from '../tg-handlers'
 
 let isHookBound = false
 
@@ -20,7 +19,7 @@ export const status: Handler = async (url, request) => {
       `${TELEGRAM_API_URL}/setWebhook`,
       makeTelegramRequestParams({
         url: url.toString(),
-        allowed_updates: ALLOWED_UPDATES,
+        allowed_updates: Array.from(UPDATES.values()),
       } as Methods['setWebhook']),
     )
 

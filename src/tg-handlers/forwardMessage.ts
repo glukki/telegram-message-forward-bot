@@ -6,6 +6,9 @@ import {
   makeHookResponse,
   makeTelegramRequestParams,
 } from '../telegramUtils'
+import { registerUpdatesSubscription } from './_events'
+
+registerUpdatesSubscription('message')
 
 export const forwardMessage: TelegramHandler = (update, request, event) => {
   if (typeof FORWARD_TO_CHAT_ID === 'undefined' || !FORWARD_TO_CHAT_ID) {

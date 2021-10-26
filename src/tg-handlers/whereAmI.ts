@@ -3,6 +3,9 @@ import { Update } from 'typegram/update'
 import { TelegramHandler } from '../telegramRouter'
 import { makeHookResponse } from '../telegramUtils'
 import { ReplyMethods } from '../types'
+import { registerUpdatesSubscription } from './_events'
+
+registerUpdatesSubscription('message')
 
 const COMMAND = '/whereami'
 
