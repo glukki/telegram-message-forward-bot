@@ -1,7 +1,7 @@
 {
-  "name": "worker-typescript-template",
+  "name": "telegram-message-forward-bot",
   "version": "1.0.0",
-  "description": "Cloudflare worker TypeScript template",
+  "description": "Telegram bot to forward DMs into \"inbox\" group chat",
   "main": "dist/worker.js",
   "scripts": {
     "build": "webpack",
