@@ -40,6 +40,7 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
+    "@grammyjs/types": "^2.4.5",
     "typegram": "^3.4.3"
   }
 }
