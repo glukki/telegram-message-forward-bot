@@ -1,6 +1,5 @@
+import { Update, Chat, Message } from '@grammyjs/types'
 import { Methods, ReplyMethods } from '../types'
-import { Update } from 'typegram/update'
-import { Chat, Message } from 'typegram'
 
 export const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_API_TOKEN}`
 
@@ -26,10 +25,10 @@ export const makeHookResponse = (
   })
 }
 
-export const isMessageUpdate = (
-  update: Update,
-): update is Update.MessageUpdate => {
-  return !!(update as Update.MessageUpdate).message
+export const isMessageUpdate = <T extends Update = Update>(
+  update: T,
+): update is T & { message: Message } => {
+  return !!update.message
 }
 
 export const isTextMessage = (
