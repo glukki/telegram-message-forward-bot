@@ -1,17 +1,18 @@
+import { webhookCallback } from 'grammy'
 import { Handler } from '../router'
-import { TelegramRouter } from '../telegramRouter'
-import { handlers } from '../tg-handlers'
+import { getBot } from '../botConstructor'
+import { webhookAdapter } from '../telegramUtils'
 
-let telegramRouter: TelegramRouter
+let hook: Handler
 
 export const telegramWebhook: Handler = async (url, request, event) => {
   if (url.pathname !== HOOK_PATH) {
     return
   }
 
-  if (!telegramRouter) {
-    telegramRouter = new TelegramRouter(handlers)
+  if (!hook) {
+    hook = webhookCallback(getBot(), webhookAdapter)
   }
 
-  return (await telegramRouter.handle(request, event)) || new Response()
+  return hook(url, request, event)
 }

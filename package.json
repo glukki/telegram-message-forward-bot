@@ -41,6 +41,6 @@
   },
   "dependencies": {
     "@grammyjs/types": "^2.4.5",
-    "typegram": "^3.4.3"
+    "grammy": "^1.5.3"
   }
 }

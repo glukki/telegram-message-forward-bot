@@ -1,13 +1,3 @@
-import { Update } from 'typegram/update'
-import { Telegram } from 'typegram'
+import { Update } from '@grammyjs/types'
 
-type UnionKeys<T> = T extends unknown ? keyof T : never
-export type UpdateType = Exclude<UnionKeys<Update>, keyof Update>
-
-export type Methods = {
-  [K in keyof Telegram]: Parameters<Telegram[K]>[0]
-}
-
-export type ReplyMethods = {
-  [K in keyof Telegram]: Parameters<Telegram[K]>[0] & { method: K }
-}
+export type UpdateType = Exclude<keyof Update, 'update_id'>

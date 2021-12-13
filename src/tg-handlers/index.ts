@@ -1,7 +1,7 @@
-import { help } from './help'
-import { whereAmI } from './whereAmI'
-import { forwardMessage } from './forwardMessage'
+import { helpMiddleware } from './help'
+import { whereAmIMiddleware } from './whereAmI'
+import { forwardMiddleware } from './forwardMessage'
 
 export { UPDATES } from './_events'
 
-export const handlers = [help, whereAmI, forwardMessage]
+export const handlers = [helpMiddleware, whereAmIMiddleware, forwardMiddleware]

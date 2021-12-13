@@ -1,40 +1,29 @@
-import { Update, Chat, Message } from '@grammyjs/types'
-import { Methods, ReplyMethods } from '../types'
+import { FrameworkAdapter } from 'grammy'
+import { Chat } from '@grammyjs/types'
 
-export const TELEGRAM_API_URL = `https://api.telegram.org/bot${TELEGRAM_API_TOKEN}`
+export const webhookAdapter: FrameworkAdapter = (
+  url: URL,
+  request: Request,
+) => {
+  let resolveHandler: (response: Response) => void
 
-export const makeTelegramRequestParams = (
-  body: Methods[keyof Methods],
-): RequestInit => {
-  return {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  }
-}
-
-export const makeHookResponse = (
-  body: ReplyMethods[keyof ReplyMethods],
-): Response => {
-  return new Response(JSON.stringify(body), {
-    headers: {
-      'content-type': 'application/json',
-    },
+  const responsePromise = new Promise((resolve) => {
+    resolveHandler = resolve
   })
-}
 
-export const isMessageUpdate = <T extends Update = Update>(
-  update: T,
-): update is T & { message: Message } => {
-  return !!update.message
-}
-
-export const isTextMessage = (
-  message?: Message,
-): message is Message.TextMessage => {
-  return !!(message as Message.TextMessage)?.text
+  return {
+    handlerReturn: responsePromise,
+    update: request.json(),
+    end: () => resolveHandler(new Response()),
+    respond: (json: string) =>
+      resolveHandler(
+        new Response(json, {
+          headers: {
+            'content-type': 'application/json',
+          },
+        }),
+      ),
+  }
 }
 
 export const isGroupChat = (
