@@ -1,5 +1,6 @@
 import { Composer } from 'grammy'
 import { User } from '@grammyjs/types'
+import { MuteButton } from '../controllers'
 import { registerUpdatesSubscription } from './_events'
 
 registerUpdatesSubscription('message')
@@ -14,6 +15,13 @@ forwardMiddleware
       return next()
     }
 
+    const muteDate = await MUTE.get<Date>(`${ctx.chat.id}`, {
+      type: 'json',
+    })
+    if (muteDate) {
+      return ctx.reply(`You got mute for 24 hours at ${muteDate.toISOString()}`)
+    }
+
     const from = ctx.message.from as User
     const userName =
       from?.first_name + (from?.last_name ? ` ${from.last_name}` : '') ||
@@ -25,6 +33,7 @@ forwardMiddleware
       `We got a new message from [${userName}](tg://user?id=${from.id})`,
       {
         parse_mode: 'MarkdownV2',
+        reply_markup: MuteButton.getInitialKeyboard(from.id),
       },
     )
 

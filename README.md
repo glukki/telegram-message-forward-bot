@@ -2,11 +2,31 @@
 
 This bot will forward messages from 1-on-1 chat into an "inbox" group chat.
 
-### Interaction flow
+### The interaction flow
 
 When user sends a message to the bot, without any known command in it:
 
-- bot forwards message to the "Inbox" chat/channel with a link to the sender
+- bot forwards message to the "Inbox" chat/channel with a link to the sender, and a mute button
+
+When mute button hit:
+
+- bot replaces the mute button with a confirmation request
+
+When mute confirmation button hit:
+
+- bot mutes sender for 24 hours
+- bot updates sent message with the mute action timestamp
+- bot replaces mute button with an unmute button
+
+When unmute button hit:
+
+- bot replaces the unmute button with a confirmation prompt
+
+When unmute confirmation button hit:
+
+- bot unmutes sender
+- bot updates sent message with the unmute action timestamp
+- bot replaces unmute button with a mute button
 
 ### Setup
 
