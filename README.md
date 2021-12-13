@@ -2,6 +2,12 @@
 
 This bot will forward messages from 1-on-1 chat into an "inbox" group chat.
 
+### Interaction flow
+
+When user sends a message to the bot, without any known command in it:
+
+- bot forwards message to the "Inbox" chat/channel with a link to the sender
+
 ### Setup
 
 Make a `wrangler.toml` file after the `wrangler.example.toml` and define variables:
