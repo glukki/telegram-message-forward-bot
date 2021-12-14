@@ -6,6 +6,9 @@ This bot will forward messages from 1-on-1 chat into an "inbox" group chat.
 
 When user sends a message to the bot, without any known command in it:
 
+- bot replies with a prompt to forward message
+- user hit send button
+- bot updates/removes prompt
 - bot forwards message to the "Inbox" chat/channel with a link to the sender, and a mute button
 
 When mute button hit:
