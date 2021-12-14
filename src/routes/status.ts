@@ -4,23 +4,23 @@ import { getBot } from '../botConstructor'
 
 let isHookBound = false
 
-export const status: Handler = async (url, request) => {
+export const status: Handler = async (url, request, env, ctx) => {
   if (url.pathname !== '/status') {
     return
   }
 
   if (!isHookBound) {
     const url = new URL(request.url)
-    url.pathname = HOOK_PATH
+    url.pathname = env.HOOK_PATH
 
-    await getBot().api.setWebhook(url.toString(), {
+    await getBot(env, ctx).api.setWebhook(url.toString(), {
       allowed_updates: Array.from(UPDATES.values()),
     })
 
     isHookBound = true
   }
 
-  const info = await getBot().api.getWebhookInfo()
+  const info = await getBot(env, ctx).api.getWebhookInfo()
 
   return new Response(JSON.stringify(info), {
     headers: {

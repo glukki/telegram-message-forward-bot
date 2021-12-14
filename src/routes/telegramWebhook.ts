@@ -5,14 +5,14 @@ import { webhookAdapter } from '../telegramUtils'
 
 let hook: Handler
 
-export const telegramWebhook: Handler = async (url, request, event) => {
-  if (url.pathname !== HOOK_PATH) {
+export const telegramWebhook: Handler = async (url, request, env, ctx) => {
+  if (url.pathname !== env.HOOK_PATH) {
     return
   }
 
   if (!hook) {
-    hook = webhookCallback(getBot(), webhookAdapter)
+    hook = webhookCallback(getBot(env, ctx), webhookAdapter)
   }
 
-  return hook(url, request, event)
+  return hook(url, request, env, ctx)
 }

@@ -1,10 +1,11 @@
 import { Composer } from 'grammy'
+import { BotContext } from '../types'
 import { isGroupChat } from '../telegramUtils'
 import { registerUpdatesSubscription } from './_events'
 
 registerUpdatesSubscription('message')
 
-export const whereAmIMiddleware = new Composer()
+export const whereAmIMiddleware = new Composer<BotContext>()
 
 whereAmIMiddleware
   .on('message:text')

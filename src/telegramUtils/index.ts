@@ -1,10 +1,15 @@
-import { FrameworkAdapter } from 'grammy'
+import { Context, FrameworkAdapter, MiddlewareFn } from 'grammy'
 import { Chat } from '@grammyjs/types'
+import { Env } from '../bindings'
 
-export const webhookAdapter: FrameworkAdapter = (
+export type CloudflareModuleAdapterType = (
   url: URL,
   request: Request,
-) => {
+  env: Env,
+  ctx: ExecutionContext,
+) => ReturnType<FrameworkAdapter>
+
+export const webhookAdapter: CloudflareModuleAdapterType = (url, request) => {
   let resolveHandler: (response: Response) => void
 
   const responsePromise = new Promise((resolve) => {
@@ -26,8 +31,24 @@ export const webhookAdapter: FrameworkAdapter = (
   }
 }
 
-export const isGroupChat = (
-  chat: Chat,
-): chat is Chat.GroupChat | Chat.SupergroupChat => {
+export interface WorkerFlavor<E> {
+  worker: {
+    env: E
+    ctx: ExecutionContext
+  }
+}
+
+export const workerContext = <E, C extends Context = Context>(
+  env: E,
+  executionContext: ExecutionContext,
+): MiddlewareFn<C & WorkerFlavor<E>> => {
+  return async (ctx, next) => {
+    ctx.worker = { env, ctx: executionContext }
+
+    return next()
+  }
+}
+
+export const isGroupChat = (chat: Chat): chat is Chat.GroupChat | Chat.SupergroupChat => {
   return chat.type === 'group' || chat.type === 'supergroup'
 }

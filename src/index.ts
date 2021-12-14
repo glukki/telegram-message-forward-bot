@@ -1,17 +1,17 @@
+import { Env } from './bindings'
 import { log } from './log'
 import { handleRequest } from './handler'
 
-async function handleEvent(event: FetchEvent): Promise<Response> {
-  try {
-    return await handleRequest(event.request, event)
-  } catch (e) {
-    event.waitUntil(log(e, event.request))
-    return new Response(e.message || 'An error occurred!', {
-      status: e.statusCode || 500,
-    })
-  }
-}
+export default {
+  async fetch(request, env, ctx) {
+    try {
+      return await handleRequest(request, env, ctx)
+    } catch (e) {
+      ctx.waitUntil(log(e as Error, request, env, ctx))
 
-addEventListener('fetch', (event) => {
-  event.respondWith(handleEvent(event))
-})
+      return new Response((e as Error).message || 'An error occurred!', {
+        status: (e as { statusCode?: number })?.statusCode || 500,
+      })
+    }
+  },
+} as ExportedHandler<Env>

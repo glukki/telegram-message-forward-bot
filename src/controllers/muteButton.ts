@@ -8,13 +8,9 @@ const QUERY_UNMUTE_CONFIRM = '/confirmUnmute'
 
 const USER_ID_PARAM = 'id'
 
-const BASE_URL = new URL('http://bot/')
+const BASE_URL = 'http://bot/'
 
-type ButtonStateName =
-  | typeof QUERY_MUTE
-  | typeof QUERY_MUTE_CONFIRM
-  | typeof QUERY_UNMUTE
-  | typeof QUERY_UNMUTE_CONFIRM
+type ButtonStateName = typeof QUERY_MUTE | typeof QUERY_MUTE_CONFIRM | typeof QUERY_UNMUTE | typeof QUERY_UNMUTE_CONFIRM
 
 interface ButtonState {
   name: ButtonStateName
@@ -66,26 +62,16 @@ export class MuteButton {
     return new InlineKeyboard().add(MuteButton.getNextMuteButton(queryUrl))
   }
 
-  private static getInitialMuteButton(
-    userId: number,
-  ): InlineKeyboardButton.CallbackButton {
+  private static getInitialMuteButton(userId: number): InlineKeyboardButton.CallbackButton {
     const url = new URL(QUERY_MUTE, BASE_URL)
     url.searchParams.set(USER_ID_PARAM, encodeURIComponent(userId))
 
-    return (
-      BUTTON_STATES.find((state) => state.name === QUERY_MUTE) as ButtonState
-    ).value(url)
+    return (BUTTON_STATES.find((state) => state.name === QUERY_MUTE) as ButtonState).value(url)
   }
 
-  private static getNextMuteButton(
-    queryUrl: URL,
-  ): InlineKeyboardButton.CallbackButton {
-    const nextPath = BUTTON_STATES.find(
-      ({ name }) => name === queryUrl.pathname,
-    )?.next
+  private static getNextMuteButton(queryUrl: URL): InlineKeyboardButton.CallbackButton {
+    const nextPath = BUTTON_STATES.find(({ name }) => name === queryUrl.pathname)?.next
 
-    return (
-      BUTTON_STATES.find((state) => state.name === nextPath) as ButtonState
-    ).value(queryUrl)
+    return (BUTTON_STATES.find((state) => state.name === nextPath) as ButtonState).value(queryUrl)
   }
 }

@@ -25,4 +25,5 @@ port = 8080
 [build]
 command = "npm install && npm run build"
 [build.upload]
-format = "service-worker"
+format = "modules"
+main = "./index.mjs"

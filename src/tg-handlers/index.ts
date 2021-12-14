@@ -5,9 +5,4 @@ import { forwardMiddleware } from './forwardMessage'
 
 export { UPDATES } from './_events'
 
-export const handlers = [
-  helpMiddleware,
-  muteMiddleware,
-  whereAmIMiddleware,
-  forwardMiddleware,
-]
+export const middlewares = [helpMiddleware, muteMiddleware, whereAmIMiddleware, forwardMiddleware]

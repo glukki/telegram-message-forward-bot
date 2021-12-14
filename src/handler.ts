@@ -1,3 +1,4 @@
+import { Env } from './bindings'
 import { Handler, Router } from './router'
 import { routes as appRoutes } from './routes'
 
@@ -14,13 +15,10 @@ const routes: Handler[] = [
 
 let router: Router
 
-export async function handleRequest(
-  request: Request,
-  event: FetchEvent,
-): Promise<Response> {
+export async function handleRequest(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   if (!router) {
     router = new Router(routes)
   }
 
-  return await router.handle(request, event)
+  return await router.handle(request, env, ctx)
 }
